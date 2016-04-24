@@ -1,0 +1,5 @@
+<h2> List of all Carts</h2>
+<% @carts.each do |cart| %>
+	<p><%= cart.id %></p>
+	<%= cart.line_items %>
+<% end %>
