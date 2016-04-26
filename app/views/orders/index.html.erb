@@ -6,26 +6,22 @@
     <th>Address</th>
     <th>Email</th>
     <th>Pay type</th>
-    <th></th>
-    <th></th>
-    <th></th>
   </tr>
 
-<% @orders.each do |order| %>
-  
-  <tr class="<%= cycle('list_line_odd', 'list_line_even') %>">
-    <tr class="table_row">
+<% @orders.each do |order| %> 
+    <tr class="table_row" id="<%=order.id%>">
         <td><%= order.name %></td>
         <td><%= order.address %></td>
         <td><%= order.email %></td>
         <td><%= order.pay_type %></td>
         <td class="list_actions">
           <td><%= link_to 'Show',  order_path(order.id) %></td>
-          <td><%= link_to 'Edit', edit_order_path(order) %></td>
-          <td><%= link_to 'Destroy', order_path(order) , method: :delete, remote: true %></td>
+          <td><%= link_to 'Edit', edit_order_path(order),  
+                  remote: true %></td>
+          <td><%= link_to 'Destroy', order_path(order) , method: :delete,
+                  remote: true %></td>
         </td>
     </tr>
-  </tr>
 <% end %>
 </table>
 
@@ -33,3 +29,6 @@
 
 <%= link_to 'New Order', new_order_path %>
 <p><%= will_paginate @orders %></p>
+
+
+<div id="edit_form"></div>

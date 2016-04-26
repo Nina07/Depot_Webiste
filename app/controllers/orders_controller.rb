@@ -1,4 +1,5 @@
 class OrdersController < ApplicationController
+  skip_before_filter :authorize, only: [:new, :create]
 
   before_filter :current_cart
   
@@ -13,6 +14,10 @@ class OrdersController < ApplicationController
 
   def edit
     @order = Order.find(params[:id])
+    respond_to do |format|
+      format.html { redirect_to orders_path }
+      format.js { @current_order = @order.id }
+      end
   end
 
   def new
@@ -50,13 +55,27 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
     @order.destroy
     respond_to do |format|
-      format.html { redirect_to orders_path}
-      format.js {@current_order = @order.id}
+      format.html { redirect_to orders_path }
+      format.js { @current_order = @order.id }
     end
   end
 
   def show
     @order = Order.find(params[:id])
+  end
+
+  def update
+    @order = Order.find(params[:id])
+    respond_to do |format|
+      if @order.update(order_params)
+        format.html { redirect_to @order, notice: 'Product was successfully updated.' }
+        format.js { @updated_order = @order.id }
+        format.json { render :show, status: :ok, location: @order }
+      else
+        format.html { render :edit }
+        format.json { render json: @order.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   private

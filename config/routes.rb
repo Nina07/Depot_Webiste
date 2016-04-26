@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
 
+  resources :admin
+    
+  controller :sessions do
+    get 'login' => :new
+    post 'login' => :create
+    delete 'logout' => :destroy
+  end
+
   resources :products do
     get :who_bought, on: :member
   end
@@ -9,6 +17,8 @@ Rails.application.routes.draw do
   resources :line_items
 
   resources :orders
+
+  resources :users, except: :show
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

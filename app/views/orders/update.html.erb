@@ -1,0 +1,20 @@
+<h3>Order has been edited </h3>
+<p>
+  <strong>Name:</strong>
+  <%= @order.name %>
+</p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @order.address %>
+</p>
+
+<p>
+  <strong>Email ID:</strong>
+  <%= @order.email %>
+</p>
+
+<%= link_to 'Edit', edit_order_path(@order) %> 
+<%= link_to 'Back', orders_path %>
+
+<div id="updated_order"></div>
