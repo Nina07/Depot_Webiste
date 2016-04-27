@@ -36,18 +36,14 @@ class OrdersController < ApplicationController
   def create
     @order = Order.new(order_params)
     @order.add_line_items_from_cart(current_cart)
-    respond_to do |format|
-      if @order.save
-        Cart.destroy(session[:cart_id])
-        OrderNotifier.received(@order).deliver
-        session[:cart_id] = nil
-        format.html { redirect_to store_url, notice: 'Thank you for your Order'}
-        format.json { render json: @order, status: :created, location: @order}
-      else
-        @cart = current_cart
-        format.html { render action: 'new' }
-        format.json { render json: @order.errors, status: :unprocessable_entity}
-      end
+    if @order.save
+      Cart.destroy(session[:cart_id])
+      OrderNotifier.received(@order).deliver
+      session[:cart_id] = nil
+      redirect_to store_url, notice: I18n.t('.thanks')
+    else
+      @cart = current_cart
+      render action: 'new' 
     end
   end
 

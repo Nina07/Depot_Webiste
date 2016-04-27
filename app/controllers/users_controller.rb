@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_filter :current_cart
+  skip_before_filter :authorize, only: [:create, :new]
 
   def index
     @users = User.order(:name)
@@ -7,6 +8,9 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    respond_to do |format|
+      format.js 
+    end
   end
 
   def create
@@ -16,6 +20,7 @@ class UsersController < ApplicationController
       if @user.errors.empty?
         @user.save        
         format.html { redirect_to users_path }
+        format.js
         format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render action: "new"}
@@ -36,7 +41,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
 
     respond_to do |format|
-      if @user.update_attributes(params[:user])
+      byebug
+      if @user.update_attributes(user_params)
         format.html { redirect_to users_url , notice: "User #{@user.name} successfully updated."}
         format.json { render json: @user, status: :updated, location: @user }
       else
@@ -51,11 +57,16 @@ class UsersController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
-    @user.destroy
-    respond_to do |format|
-        format.html { redirect_to users_url }
-        format.json { render json: @user }
+    begin
+      @user.destroy
+      flash[:notice] = "User #{@user.name} has been deleted"
+    rescue Exception => e
+      flash[:notice] = e.message
     end
+      respond_to do |format|
+          format.html { redirect_to users_url }
+          format.json { render json: @user }
+      end
   end
 
   private
