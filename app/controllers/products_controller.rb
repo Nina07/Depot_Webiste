@@ -1,11 +1,24 @@
 class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   before_filter :current_cart
+  before_filter do 
+    puts "before "
+  end
+  around_filter do |controller, action|
+    logger.debug "around filter------- #{controller.action_name}"
+    action.call
+    logger.debug "around filter------- #{controller.action_name}"
+  end
+
+  after_filter do 
+    puts "after"
+  end
 
   # GET /products
   # GET /products.json
   def index
-    @products = Product.all
+    @products = Product.order(created_at: :desc)
+    @most_recent = Product.latest_product(1)
   end
 
   # GET /products/1
@@ -26,16 +39,13 @@ class ProductsController < ApplicationController
   # POST /products.json
   def create
     @product = Product.new(product_params)
-
-    respond_to do |format|
-      if @product.save
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
-        format.json { render :show, status: :created, location: @product }
-      else
-        format.html { render :new }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
-      end
-    end
+    unless @product.errors.any?
+      byebug
+      @product.save
+      redirect_to @product
+    else
+      render :new 
+    end    
   end
 
   # PATCH/PUT /products/1
@@ -44,10 +54,8 @@ class ProductsController < ApplicationController
     respond_to do |format|
       if @product.update(product_params)
         format.html { redirect_to @product, notice: 'Product was successfully updated.' }
-        format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit }
-        format.json { render json: @product.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -58,7 +66,6 @@ class ProductsController < ApplicationController
     @product.destroy
     respond_to do |format|
       format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
-      format.json { head :no_content }
     end
   end
 
@@ -79,4 +86,5 @@ class ProductsController < ApplicationController
     def product_params
       params.require(:product).permit(:title, :description, :image_url, :price)
     end
+
 end

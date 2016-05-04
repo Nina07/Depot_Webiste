@@ -2,6 +2,7 @@ class LineItemsController < ApplicationController
 	skip_before_filter :authorize, only: :create
 	
 	def create
+		byebug
 		find_cart
 		product = Product.find(params[:product_id])
 		@line_item = @cart.add_product(product.id)
@@ -10,12 +11,8 @@ class LineItemsController < ApplicationController
 			if @line_item.save
 				format.html {redirect_to store_url}
 				format.js {@current_item = @line_item}
-				format.json {render json: @line_item,
-								status: :created, location: @line_item}
 			else
 				format.html {render action: "new"}
-				format.json {render json: @line_item.errors,
-							status: "Unprocessable Entry"}
 			end
 		end
 	end
@@ -28,7 +25,6 @@ class LineItemsController < ApplicationController
 		@line_item = item.id
 		respond_to do |format|
 	      format.html { redirect_to store_url, notice: 'Your Item has been deleted.'}
-	      format.json { head :no_content }
     	end
 	end
 

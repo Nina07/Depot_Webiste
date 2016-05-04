@@ -2,6 +2,7 @@ class CartsController < ApplicationController
   skip_before_filter :authorize, only: [:create, :update, :destroy]
   
   def index
+    byebug
     @carts = Cart.all
   end
 
@@ -12,10 +13,6 @@ class CartsController < ApplicationController
       logger.error "Attempt to access invalid cart #{params[:id]}"
       redirect_to store_url, notice: 'Invalid Cart'
     else
-      respond_to do |format|
-        format.html 
-        format.json {render json: @cart}
-      end
     end
   end
 
@@ -26,7 +23,6 @@ class CartsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to store_url }
-      format.json { head :no_content }
     end
   end
 

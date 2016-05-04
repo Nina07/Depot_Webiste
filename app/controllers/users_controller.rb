@@ -21,20 +21,14 @@ class UsersController < ApplicationController
         @user.save        
         format.html { redirect_to users_path }
         format.js
-        format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render action: "new"}
-        format.json { render json: @user.errors, status: :unprocessable_entry }
       end
     end
   end
 
   def edit
     @user = User.find(params[:id])
-    respond_to do |format|
-      format.html
-      format.json { render @user }
-    end
   end
 
   def update
@@ -44,10 +38,8 @@ class UsersController < ApplicationController
       byebug
       if @user.update_attributes(user_params)
         format.html { redirect_to users_url , notice: "User #{@user.name} successfully updated."}
-        format.json { render json: @user, status: :updated, location: @user }
       else
         format.html { render action: edit}
-        format.json { render json: @user.errors, status: :unprocessable_entry }
       end
     end
   end
@@ -63,10 +55,6 @@ class UsersController < ApplicationController
     rescue Exception => e
       flash[:notice] = e.message
     end
-      respond_to do |format|
-          format.html { redirect_to users_url }
-          format.json { render json: @user }
-      end
   end
 
   private

@@ -1,4 +1,6 @@
-<h3>Listing products</h3> 
+<h4><u>Our latest product is <%= @most_recent[0].title.capitalize %> !! Don't forget to check it out.</u></h4>
+
+<h3>All Products</h3> 
 <table>
   <% @products.each do |product| %>
   <tr class="<%= cycle('list_line_odd', 'list_line_even') %>">
@@ -23,5 +25,6 @@
   </tr>
   <% end %>
 </table>
+
 <br />
 <%= link_to 'New product', new_product_path %>
