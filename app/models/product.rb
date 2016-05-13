@@ -11,82 +11,90 @@ class Product < ActiveRecord::Base
 
   scope :latest_product, -> (limit) { order("created_at desc").limit(limit)}
 
-  before_validation do
-    puts "before_validation"
-  end
-
-  after_validation do
-    puts "after_validation"
-  end
-
-  before_save do
-    puts "before save num 1"    
-     
-  end  
-
-  before_create do  
-    puts "before create"
-  end
-
-  before_save do
-    puts "before save no 2"
-  end
-
-  around_save :around_save
-
-  around_create :around_create
-
-  after_save do
-    puts "after save"
-  end
-
-  after_create do
-   puts "after create"
-  end
-
-  after_commit do
-    puts "after commit"
-  end
-
-  before_update do
-    puts "before update"
-  end
-
-  after_update do
-    puts "after update"
-  end
-
-  before_destroy do
-    puts "before destroy"
-    # ggh*ghkjh
-  end
-
-  after_destroy do
-    logger.info("#{self.title} has been destroyed")
-    puts "after destroy"
-  end
-
-  after_touch do 
-    puts "object has been touched"
-  end
-
-  after_rollback do
-    logger.info("#{self.id} object failed to commit ")
-  end
-
-  after_initialize do
-    puts "New object initialised"
-  end
-
-  after_find :find_record
-
   has_many :line_items
   has_many :orders, through: :line_items
+
+  # before_validation do
+  #   puts "before_validation"
+  # end
+
+  # after_validation do
+  #   puts "after_validation"
+  # end
+
+  # before_save do
+  #   puts "before save num 1"    
+     
+  # end  
+
+  # before_create do  
+  #   puts "before create"
+  # end
+
+  # before_save do
+  #   puts "before save no 2"
+  # end
+
+  # around_save :around_save
+
+  # around_create :around_create
+
+  # after_save do
+  #   puts "after save"
+  # end
+
+  # after_create do
+  #  puts "after create"
+  # end
+
+  # after_commit do
+  #   puts "after commit"
+  # end
+
+  # before_update do
+  #   puts "before update"
+  # end
+
+  # after_update do
+  #   puts "after update"
+  # end
+
+  # before_destroy do
+  #   puts "before destroy"
+  #   # ggh*ghkjh
+  # end
+
+  # after_destroy do
+  #   logger.info("#{self.title} has been destroyed")
+  #   puts "after destroy"
+  # end
+
+  # after_touch do 
+  #   puts "object has been touched"
+  # end
+
+  # after_rollback do
+  #   logger.info("#{self.id} object failed to commit ")
+  # end
+
+  # after_initialize do
+  #   puts "New object initialised"
+  # end
+
+  # after_find :find_record
 
   before_destroy :ensure_not_referenced_by_line_item
 
   def self.class_method(n)
     latest_product(n).first
+  end
+
+  def self.begin_with_check(letter)
+    where("title like ?", "#{letter}%").order(:title).first.title if self.where("title like ?", "#{letter}%").present?
+  end
+
+  def do_upcase
+    title.upcase
   end
 
 
